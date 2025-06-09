@@ -1,13 +1,16 @@
-name: Build and Publish Containers to GHCR
-
+name: Release
 on:
-  push:
-    branches: [main]
-    paths:
-      - "frontend/**"
-      - "backend/**"
-      - "VERSION"
-      - ".github/workflows/publish-containers.yml"
+  workflow_dispatch:
+    inputs:
+      nextVersion:
+        description: 'specify the release version in the semver format v[major].[minor].[patch] e.g. v0.0.0'
+        required: true
+
+# Releases need permissions to read and write the repository contents.
+# GitHub considers creating releases and uploading assets as writing contents.
+permissions:
+  contents: write
+  packages: write
 
 jobs:
   build-and-push:
@@ -16,36 +19,39 @@ jobs:
     permissions:
       contents: read
       packages: write
-
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME_FRONTEND: ${{ toLower(github.repository) }}/frontend
-      IMAGE_NAME_BACKEND: ${{ toLower(github.repository) }}/backend
-      VERSION: ${{ github.sha }}  # fallback, overwritten below
-
+      IMAGE_NAME_FRONTEND: ${{ github.repository }}/frontend
+      IMAGE_NAME_BACKEND: ${{ github.repository }}/backend
+      VERSION: ${{ github.sha }} # fallback, overwritten below
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+        
       - name: Set version from VERSION file
         id: version
         run: |
           VERSION=$(cat VERSION)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-
+          
+      - name: Convert repository name to lowercase
+        id: lowercase
+        run: |
+          echo "repo_name=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+          
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+          
       - name: Generate release notes
         id: changelog
         run: |
           echo "### Changelog" > changelog.md
           git log -n 10 --pretty=format:"- %s (%h)" >> changelog.md
-
+          
       - name: Build and push frontend container
         uses: docker/build-push-action@v5
         with:
@@ -53,9 +59,9 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.IMAGE_NAME_FRONTEND }}:${{ steps.version.outputs.version }}
-            ghcr.io/${{ env.IMAGE_NAME_FRONTEND }}:latest
-
+            ghcr.io/${{ steps.lowercase.outputs.repo_name }}/frontend:${{ steps.version.outputs.version }}
+            ghcr.io/${{ steps.lowercase.outputs.repo_name }}/frontend:latest
+            
       - name: Build and push backend container
         uses: docker/build-push-action@v5
         with:
@@ -63,9 +69,9 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.IMAGE_NAME_BACKEND }}:${{ steps.version.outputs.version }}
-            ghcr.io/${{ env.IMAGE_NAME_BACKEND }}:latest
-
+            ghcr.io/${{ steps.lowercase.outputs.repo_name }}/backend:${{ steps.version.outputs.version }}
+            ghcr.io/${{ steps.lowercase.outputs.repo_name }}/backend:latest
+            
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
