@@ -1,0 +1,56 @@
+.user-stats {
+  border: #000000;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  padding: 1em !important;
+  color: white;
+  border-color:white;
+  background-image: radial-gradient(#428c693a, #212529 );
+  /* box-shadow: rgba(196, 196, 196, 0.2) 0px 5px 15px; */
+  box-shadow: rgba(50, 93, 84, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+  /* box-shadow: rgba(185, 23, 23, 0.2) 0px 2px 8px 0px; */
+}
+
+
+.scroll-div {
+  overflow-y: scroll;
+  height: 20vh;
+  border-color: white;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 1px;
+  color: white;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.gamelog-timestamp {
+  font-style: italic;
+}
+
+.gamelog-result-won {
+  font-weight: bold;
+  color: #428c6a;
+}
+
+.gamelog-result-lost {
+  font-weight: bold;
+  color: #69271d;
+}
+
+.gamelog-result-draw {
+  font-weight: bold;
+  color: #838383;
+}
+
+.gamelog-row {
+  border-bottom-style:groove;
+  border-bottom-color: rgba(0, 0, 0, 0.226);
+  border-bottom-width: 1px;
+  padding-top:1px;
+  padding-bottom:1px;
+  font-size: small;
+  margin: 0px !important;
+}

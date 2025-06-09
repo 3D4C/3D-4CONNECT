@@ -1,0 +1,5 @@
+{
+    "Professional" : [1800, 9998],
+    "Advanced"     : [1200, 1799],
+    "Apprentice"   : [1, 1199]
+  }

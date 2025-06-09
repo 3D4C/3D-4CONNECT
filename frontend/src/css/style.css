@@ -1,0 +1,133 @@
+/* 
+black: #212529
+white: 
+main-akzent-color: #428C6A
+light-akzent-color: #dde9e3
+dark-akzent-color: #264f3c
+*/
+
+.expander {
+  min-height: 80vh;
+  padding-bottom: 2em;
+  padding-top: 2em;
+}
+
+.centered-box {
+  width: 50vw;
+}
+
+.hide {
+  display: none;
+}
+
+.theme-text {
+  color: #428c6a;
+}
+
+.unselectable-text {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.responsive-break {
+  display: none;
+}
+
+@media (max-width: 576px) {
+  .expander {
+    min-height: 70vh;
+  }
+
+  .centered-box {
+    width: 80vw !important;
+  }
+}
+
+.info-icon {
+  height: 22.5px;
+  width: 22.5px;
+}
+
+.info-box {
+  border-radius: 5px;
+  background-color: rgb(255, 255, 255);
+  margin-top: 2em;
+  padding: 0.5em;
+  color: RGBA(33, 37, 41);
+  font-size: smaller;
+}
+
+.btn {
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: #ffffff;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  width: 100%;
+}
+.btn:hover {
+  background-color: #dddddd;
+  color: #222921;
+}
+.btn.theme-background {
+  background-color: #428c6a;
+  border-color: #428c6a;
+}
+.btn.theme-background:hover {
+  background-color: #327c5a;
+  border-color: #327c5a;
+}
+
+.fill-space {
+  height: 100%;
+  width: 100%;
+}
+
+.user-rank {
+  position: relative;
+  z-index: 3;
+
+  border-color: white;
+  border-style: solid;
+  border-width: 1px;
+  height: 15vh;
+  width: 15vh;
+  border-radius: 5px;
+  background-image: radial-gradient(#428c6967, #212529 );
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+
+.rank-image{
+  z-index: 2;
+
+  position:absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%);
+
+  height: 100%;;
+  width: 100%;
+}
+
+#rank-progress{
+  z-index: 1;
+
+  position:absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%);
+
+  border-top: #ffffff;
+  border-top-style:solid;
+  border-top-width: 3px;
+
+  height: 100%;;
+  width: 100%;
+  background-color: #264f3c !important; 
+  /* background-color wird in OverlayResult bei Niederlage mit #771010 überschrieben */
+
+}

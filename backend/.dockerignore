@@ -1,0 +1,12 @@
+.venv/
+.venv/docker
+_pycache_/
+.vscode/
+logs/
+runs/
+training/
+
+models/qlearning
+models/models38
+models/mcts
+models/training

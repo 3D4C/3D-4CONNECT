@@ -1,0 +1,66 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start NPM",
+            "type": "shell",
+            "command": "npm run start",
+            "problemMatcher": [],
+            "presentation": {
+                "group": "groupA"
+              }
+        },
+        {
+            "label": "Start Uvicorn (Windows)",
+            "type": "shell",
+            "command": "cd python && .venv\\Scripts\\activate && uvicorn app:app --reload",
+            "presentation": {
+                "group": "groupA"
+              },
+            "problemMatcher": [],
+            "windows": {
+                "command": "cd python && .venv\\Scripts\\activate && uvicorn app:app --reload"
+            }
+        },
+        {
+            "label": "Start Terminal for RL (Windows)",
+            "type": "shell",
+            "command": "cmd.exe /k \"cd python && .venv\\Scripts\\activate\"",
+            "problemMatcher": [],
+            "presentation": {
+                "group": "groupA"
+              }
+        },
+        {
+            "label": "Start Uvicorn (Unix)",
+            "type": "shell",
+            "command": "cd python && source .venv/bin/activate && uvicorn app:app --reload",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [],
+            "linux": {
+                "command": "cd python && source .venv/bin/activate && uvicorn app:app --reload"
+            },
+            "osx": {
+                "command": "cd python && source .venv/bin/activate && uvicorn app:app --reload"
+            }
+        },
+        {
+            "label": "Run All (Windows)",
+            "dependsOn": [
+                "Start NPM",
+                "Start Uvicorn (Windows)",
+                "Start Terminal for RL (Windows)"
+            ],
+        },
+        {
+            "label": "Run All (Unix)",
+            "dependsOn": [
+                "Start NPM",
+                "Start Uvicorn (Unix)"
+            ],
+        }
+    ]
+}
