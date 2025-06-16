@@ -3,54 +3,49 @@ on:
   workflow_dispatch:
     inputs:
       nextVersion:
-        description: 'specify the release version in the semver format v[major].[minor].[patch] e.g. v0.0.0'
+        description: 'Specify release version in semver format (vX.Y.Z)'
         required: true
 
-# Releases need permissions to read and write the repository contents.
-# GitHub considers creating releases and uploading assets as writing contents.
 permissions:
   contents: write
   packages: write
 
 jobs:
   build-and-push:
-    name: Build Release
     runs-on: ubuntu-latest
-
     env:
-      REGISTRY: ghcr.io
-      IMAGE_NAME_FRONTEND: ${{ github.repository }}/frontend
-      IMAGE_NAME_BACKEND: ${{ github.repository }}/backend
-      VERSION: ${{ github.sha }} 
       GITHUB_TOKEN: ${{ secrets.GH_PIPELINE_PAT }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
-      - name: Set version from VERSION file
-        id: version
+        with:
+          fetch-depth: 20
+
+      - name: Verify GitHub token authentication
         run: |
-          VERSION=$(cat VERSION)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          
+          response=$(curl -s -H "Authorization: token ${{ secrets.GH_PIPELINE_PAT }}" https://api.github.com/user)
+          echo "$response" | grep login || (echo "Authentication failed" && exit 1)
+
+      - name: Set version from input
+        id: version
+        run: echo "version=${{ github.event.inputs.nextVersion }}" >> $GITHUB_OUTPUT
+
       - name: Convert repository name to lowercase
         id: lowercase
-        run: |
-          echo "repo_name=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
-          
+        run: echo "repo_name=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          
+          password: ${{ secrets.GH_PIPELINE_PAT }}
+
       - name: Generate release notes
-        id: changelog
         run: |
           echo "### Changelog" > changelog.md
           git log -n 10 --pretty=format:"- %s (%h)" >> changelog.md
-          
+
       - name: Build and push frontend container
         uses: docker/build-push-action@v5
         with:
@@ -60,7 +55,7 @@ jobs:
           tags: |
             ghcr.io/${{ steps.lowercase.outputs.repo_name }}/frontend:${{ steps.version.outputs.version }}
             ghcr.io/${{ steps.lowercase.outputs.repo_name }}/frontend:latest
-            
+
       - name: Build and push backend container
         uses: docker/build-push-action@v5
         with:
@@ -70,7 +65,7 @@ jobs:
           tags: |
             ghcr.io/${{ steps.lowercase.outputs.repo_name }}/backend:${{ steps.version.outputs.version }}
             ghcr.io/${{ steps.lowercase.outputs.repo_name }}/backend:latest
-            
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
@@ -78,4 +73,4 @@ jobs:
           name: Release ${{ steps.version.outputs.version }}
           body_path: changelog.md
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PIPELINE_PAT }}
