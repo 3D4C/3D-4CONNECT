@@ -1,3 +1,6 @@
+
+![3d4c](https://github.com/user-attachments/assets/cba543e8-6a75-4472-8ebc-56ee4be594ff)
+
 # 🎮 Connect4-3D Edition  
 Welcome to the **Connect4-3D Edition** repository! This project brings the classic Connect4 game into the third dimension, complete with a computer opponent. 🚀  
 
